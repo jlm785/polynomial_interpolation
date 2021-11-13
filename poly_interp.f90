@@ -5,12 +5,10 @@
 !>
 !>  \author       Jose Luis Martins
 !>  \version      6.0.6
-!>  \date         5 July 2021.
+!>  \date         5 July 2021, 6 November 2021.
 !>  \copyright    GNU Public License v3
 
 subroutine poly_interp(y, dy, xin, yin, n, nd)
-
-! Written 23 April 2018, 5 July 2021. J. L. Martins
 
   implicit none
 
@@ -44,7 +42,7 @@ subroutine poly_interp(y, dy, xin, yin, n, nd)
 
 !      counters
 
-  integer     ::  i, m, k
+  integer     ::  i, m, k, kmax
 
   allocate(cmi(0:nd,0:n),dmi(0:nd,0:n))
   allocate(xnum(0:nd))
@@ -76,16 +74,17 @@ subroutine poly_interp(y, dy, xin, yin, n, nd)
 
   do m = 1,n
 
+    kmax = min(m,nd)
     do i = 0,n-m
       dm = xin(i)
       dp = xin(i+m)
-      do k = 0,nd
+      do k = 0,kmax
         xnum(k) = (dmi(k,i) - cmi(k,i+1)) / (dp - dm)
       enddo
       dmi(0,i) = dp*xnum(0)
       cmi(0,i) = dm*xnum(0)
       if(nd > 0) then
-        do k = 1,nd
+        do k = 1,kmax
           dmi(k,i) = dp*xnum(k) - k*xnum(k-1)
           cmi(k,i) = dm*xnum(k) - k*xnum(k-1)
         enddo
@@ -93,17 +92,17 @@ subroutine poly_interp(y, dy, xin, yin, n, nd)
     enddo
 
     if (2*ns+1 < n - m) then
-      do k = 0,nd
+      do k = 0,kmax
         dy(k) = cmi(k,ns+1)
       enddo
     else
-      do k = 0,nd
+      do k = 0,kmax
         dy(k) = dmi(k,ns)
       enddo
       ns = ns - 1
     endif
 
-    do k = 0,nd
+    do k = 0,kmax
       y(k) = y(k) + dy(k)
     enddo
 
