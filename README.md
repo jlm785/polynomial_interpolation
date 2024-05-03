@@ -15,7 +15,7 @@ To run a simple test just type
 $F90  test_poly.f90  poly_interp.f90
 a.out
 
-$F90  test_grid_interp.f90 grid_interp.f90 poly_interp.f90
+$F90  test_grid_interp.f90 grid_interp.f90 poly_interp.f90 sort.f90
 a.out
 
 where $F90 is any fortran compiler (ifort, gfortran,...).
